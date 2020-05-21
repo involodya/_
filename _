@@ -1,0 +1,194 @@
+#define _CRT_SECURE_NO_WARNINGS
+#pragma GCC optimize("-Ofast", "-ffast-math")
+//#pragma comment(linker, "/stack:200000000")
+//#pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,tune=native")
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define int int_fast32_t
+#define f first
+#define s second
+#define rsz resize
+#define ins insert
+#define ft front()
+#define bk back()
+#define pf push_front
+#define pb push_back
+#define mp make_pair
+#define eb emplace_back
+#define lb lower_bound
+#define ub upper_bound
+#define all(a) (a).begin(), (a).end()
+#define sz(x) ll(x.size())
+#define fill(a, value) memset(a, value, sizeof(a))
+#define gcd(a, b) __gcd((a), (b))
+#define forr(i, n) for (ll i = 0; i < ll(n); ++i)
+#define fov(a, x) for (auto& a: x)
+#define void inline void
+
+typedef string str;
+typedef int_fast64_t ll;
+typedef long double ld;
+typedef pair<int, int> pi;
+typedef pair<ll, ll> pl;
+typedef pair<ld, ld> pd;
+typedef vector<int> vi;
+typedef vector<ll> vl;
+typedef vector<vi> vvi;
+typedef vector<vl> vvl;
+typedef vector<pi> vpi;
+typedef vector<pl> vpl;
+
+const ld PI = acos(-1.0);
+const int MOD = 1e9 + 7; // 998244353;
+const int SZ = 1 << 17; // 131072
+const int inf = numeric_limits<int>::max();
+const ll INF = numeric_limits<ll>::max();
+
+inline bool eq(ld a, ld b) { return fabs(a - b) < 1e-9; }
+
+ll rnd(const ll &m) {
+    mt19937 rng((uint32_t) chrono::steady_clock::now().time_since_epoch().count());
+    return ll(rng() % m);
+}
+
+ld rnd(const ld &m) {
+    mt19937 rng((uint32_t) chrono::steady_clock::now().time_since_epoch().count());
+    ld sum = 0;
+
+    for (int i = 0; i < m; i++)
+        sum += rng() % 1000000;
+
+    return ld(sum / m);
+}
+
+// TO_STRING
+#define ts to_string
+
+str ts(char c) { return str(1, c); }
+
+str ts(bool b) { return b ? "true" : "false"; }
+
+str ts(const char *s) { return (str) s; }
+
+str ts(str s) { return s; }
+
+template<class A>
+inline str ts(complex<A>& c) {
+    stringstream ss;
+    ss << c;
+    return ss.str();
+}
+
+str ts(vector<bool> v) {
+    str res = "{";
+    forr(i, sz(v)) res += char('0' + v[i]);
+    res += "}";
+    return res;
+}
+
+template<size_t SZ>
+str ts(bitset<SZ> b) {
+    str res = "";
+    forr(i, SZ) res += char('0' + b[i]);
+    return res;
+}
+
+template<class A, class B>
+str ts(pair<A, B> p);
+
+template<class T>
+str ts(T v) {
+    bool fst = 1;
+    str res = "{";
+    for (const auto &x: v) {
+        if (!fst) res += ", ";
+        fst = 0;
+        res += ts(x);
+    }
+    res += "}";
+    return res;
+}
+
+template<class A, class B>
+str ts(pair<A, B> p) {
+    return "(" + ts(p.f) + ", " + ts(p.s) + ")";
+}
+
+struct InputOutputStream {
+    enum {
+        SIZE = 1 << 18 | 1
+    };
+
+    char ibuf[SIZE], *s, *t, obuf[SIZE], *oh;
+
+    InputOutputStream() : s(), t(), oh(obuf) {}
+
+    ~InputOutputStream() { fwrite(obuf, 1, oh - obuf, stdout); }
+
+    inline char read() {
+        return (s == t) && (t = (s = ibuf) + fread(ibuf, 1, SIZE, stdin)),
+                s == t ? -1 : *s++;
+    }
+
+    template<typename T>
+    inline InputOutputStream &operator>>(T &x) {
+        static char c;
+        static bool iosig;
+        for (c = read(), iosig = false; !isdigit(c); c = read()) {
+            if (c == -1) return *this;
+            iosig |= c == '-';
+        }
+        for (x = 0; isdigit(c); c = read()) x = x * 10 + (c ^ '0');
+        iosig && (x = -x);
+        return *this;
+    }
+
+    void print(char c) {
+        (oh == obuf + SIZE) && (fwrite(obuf, 1, SIZE, stdout), oh = obuf);
+        *oh++ = c;
+    }
+
+    template<typename T>
+    void print(T x) {
+        static int buf[21], cnt;
+        if (x != 0) {
+            (x < 0) && (print('-'), x = -x);
+            for (cnt = 0; x; x /= 10) buf[++cnt] = x % 10 | 48;
+            while (cnt) print((char) buf[cnt--]);
+        } else {
+            print('0');
+        }
+    }
+
+    template<typename T>
+    inline InputOutputStream &operator<<(const T &x) {
+        print(x);
+        return *this;
+    }
+} io;
+
+void print(const str &s) {
+    for (char ch : s) {
+        io << ch;
+    }
+}
+
+void fio() {
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+    cout << fixed << setprecision(15);
+}
+
+signed main() {
+    fio();
+
+    
+
+    return 0;
+}
