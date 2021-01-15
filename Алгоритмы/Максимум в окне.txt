@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+
+    int n = 10;
+    int d = sqrt(n);
+    // Массив длины n разбивается на подмассивы длины d
+    vector<int> a(n);
+    //a = {1, 2, 3, 4, 5, 6, 7, 8, 11, 10};
+    
+    // Высчитывается максимум для каждого подмассива
+    int m = n / d + 1;
+    vector<int> prefix(m);
+    for (int i = 0; i < n; ++i) {
+        prefix[i / d] = max(prefix[i / d], a[i]);
+    }
+
+    // Границы окна, в котором необходимо посчитать максимум
+    int i, j;
+    cin >> i >> j;
+
+    int ans = -1e9;
+    {
+        // Перебираем все значения левее полностью входящих в границы подмассивов
+        while (i % d != 0 && i <= j) {
+            ans = max(ans, a[i]);
+            ++i;
+        }
+        // Перебираем все значения правее полностью входящих в границы подмассивов
+        while (j % d != d - 1 && j >= i) {
+            ans = max(ans, a[j]);
+            --j;
+        }
+        // Перебираем все полностью входящие помассивы
+        for (int k = i / d; k < i / d + (j + 1 - i) / d; ++k) {
+            ans = max(ans, prefix[k]);
+        }
+    }
+
+    cout << ans;
+
+    return 0;
+}

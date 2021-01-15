@@ -1,0 +1,78 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+
+void dfs(int &start, vector<vector<int>> &g, vector<bool> &visited) {
+
+    visited[start] = true;
+    for(auto v : g[start]) {
+        if (!visited[v]) {
+            dfs(v, g, visited);
+        }
+    }
+
+}
+
+int main() {
+    ios::sync_with_stdio(false), cin.tie(0);
+
+    int n, m;
+    cin >> n >> m;
+
+    vector<vector<int>> g(n); // Список смежности, надо заполнить
+    vector<bool> visited(n, false);
+
+    {
+        // Обход в глубину, сложность O(n + m)
+        
+        for (int i = 0; i < n; ++i) {
+            dfs(i, g, visited);
+        }
+
+    }
+
+    return 0;
+}
+
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+
+void dfs(int &start, vector<vector<int>> &g, vector<bool> &visited, vector<int> &prev) {
+
+    visited[start] = true;
+    for(auto v : g[start]) {
+        if (!visited[v]) {
+            dfs(v, g, visited, prev);
+            prev[v] = start;
+        }
+    }
+
+}
+
+int main() {
+    ios::sync_with_stdio(false), cin.tie(0);
+
+    int n, m;
+    cin >> n >> m;
+
+    vector<vector<int>> g(n); // Список смежности, надо заполнить
+    vector<int> prev(n, -1); // Предки, нужен только для восстановления пути
+    vector<bool> visited(n, false);
+
+    {
+        // Обход в глубину с возможностью восстановления пути, сложность O(n + m)
+
+        for (int i = 0; i < n; ++i) {
+            dfs(i, g, visited, prev);
+        }
+
+    }
+
+    return 0;
+}

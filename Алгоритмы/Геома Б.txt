@@ -1,0 +1,360 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef long double coord_t;
+const long double PI = M_PI;
+const long double EPS = 1e-6;
+
+struct Point {
+    coord_t x, y;
+
+    Point() : x(0), y(0) {}
+    Point(coord_t x_, coord_t y_) : x(x_), y(y_) {}
+    Point(const Point & other) {
+        x = other.x;
+        y = other.y;
+    }
+
+    Point operator+ (const Point & other) const {
+        return Point(x + other.x, y + other.y);
+    }
+
+    Point operator- (const Point & other) const {
+        return Point(x - other.x, y - other.y);
+    }
+
+    long double get_distance_between(const Point & other) const {
+        return sqrt((x - other.x) * (x - other.x) + (y - other.y) * (y - other.y));
+    }
+    bool operator!= (const Point & other) const {
+        return !((*this) == other);
+    }
+
+    bool operator== (const Point & other) const {
+        return fabs(x - other.x) < EPS && fabs(y - other.y) < EPS;
+    }
+
+    coord_t operator< (const Point & other) const {
+        return (other.x - x) > EPS || (fabs(x - other.x) < EPS && (other.y - y) > EPS);
+    }
+
+    void debug() const {
+        cerr << "Point(" << x << ", " << y << ")";
+    }
+
+    friend ostream& operator<< (ostream &out, Point p) {
+        out << p.x << " " << p.y;
+        return out;
+    }
+
+    friend istream& operator>> (istream &in, Point &p) {
+        in >> p.x >> p.y;
+        return in;
+    }
+};
+
+struct Vector {
+    coord_t x, y;
+
+    Vector() : x(0), y(0) {}
+    Vector(coord_t x_, coord_t y_) : x(x_), y(y_) {}
+    Vector(const Point & point) {
+        x = point.x;
+        y = point.y;
+    }
+
+    Vector operator+ (const Vector & other) const {
+        return Vector(x + other.x, y + other.y);
+    }
+
+    Vector operator- (const Vector & other) const {
+        return Vector(x - other.x, y - other.y);
+    }
+
+    Vector operator* (long double koef) const {
+        return Vector(coord_t(x * koef), coord_t(y * koef));
+    }
+
+    coord_t operator% (const Vector other) const {
+        return x * other.x + y * other.y;
+    }
+
+    coord_t operator* (const Vector other) const {
+        return x * other.y - other.x * y;
+    }
+
+    long double get_length() const {
+        return sqrt(x * x + y * y);
+    }
+
+    Vector set_length(long double new_length) const {
+        return Vector((*this) * (new_length / get_length()));
+    }
+
+    Vector turn90() const {
+        return Vector(-y, x);
+    }
+
+    Vector turn(long double angle_sin, long double angle_cos) const {
+        return Vector(x * angle_cos - y * angle_sin, x * angle_sin + y * angle_cos);
+    }
+
+    Vector turn(long double angle) const {
+        return turn(sin(angle), cos(angle));
+    }
+
+    long double get_angle_between(const Vector & other) {
+        return atan2((*this) * other, (*this) % other);
+    }
+
+    friend ostream& operator<< (ostream &out, Vector v) {
+        out << "Vector (" << v.x << ", " << v.y << ")";
+        return out;
+    }
+
+    friend istream& operator>> (istream &in, Vector &v) {
+        in >> v.x >> v.y;
+        return in;
+    }
+
+    Point to_point() const {
+        return Point(x, y);
+    }
+};
+
+struct Line {
+    long double a, b, c;
+
+    Line() : a(0), b(0), c(0) {}
+    Line(long double a_, long double b_, long double c_): a(a_), b(b_), c(c_) {}
+    Line(const Point &p1, const Point &p2) {
+        a = p1.y - p2.y;
+        b = p2.x - p1.x;
+        c = -a * p1.x - b * p1.y;
+    }
+
+    Vector get_normal_vector() const {
+        return Vector(a, b);
+    }
+
+    Vector get_colinear_vector() const {
+        return Vector(-b, a);
+    }
+
+    long double get_distance(const Point & point) const {
+        return (a * point.x + b * point.y + c) / sqrt(a * a + b * b);
+    }
+
+    long double get_abs_distance(const Point & point) {
+        return fabs(get_distance(point));
+    }
+
+    bool is_parallel(const Line & other) {
+        long double delta_ab = a * other.b - b * other.a;
+        return fabs(delta_ab) < EPS;
+    }
+
+    bool is_equal(const Line & other) {
+        long double delta_ab = a * other.b - other.a * b;
+        long double delta_ac = a * other.c - other.a * c;
+        long double delta_bc = c * other.b - other.c * b;
+
+        return fabs(delta_ab) < EPS && fabs(delta_ac) < EPS && fabs(delta_bc) < EPS;
+    }
+
+    Point intersection(const Line & other) const {
+        long double koef = a * other.b - other.a * b;
+        long double x = -(c * other.b - other.c * b) / koef;
+        long double y = -(a * other.c - other.a * c) / koef;
+        return Point(x, y);
+    }
+
+    friend ostream& operator<< (ostream &out, Line l) {
+        out << "Line (" << l.a << ", " << l.b << ", " << l.c << ")";
+        return out;
+    }
+
+    friend istream& operator>> (istream &in, Line &l) {
+        in >> l.a >> l.b >> l.c;
+        return in;
+    }
+};
+
+struct Segment {
+    Point point1, point2;
+
+    Segment() {}
+    Segment(Point p1, Point p2) : point1(p1), point2(p2) {}
+
+    Line to_line() const {
+        return Line(point1, point2);
+    }
+
+    bool is_intersect(const Segment & other) const {
+        long double area123 = point1.x * (point2.y - other.point1.y)
+                              + point2.x * (other.point1.y - point1.y) + other.point1.x * (point1.y - point2.y);
+        long double area124 = point1.x * (point2.y - other.point2.y)
+                              + point2.x * (other.point2.y - point1.y) + other.point2.x * (point1.y - point2.y);
+        long double area134 = point1.x * (other.point1.y - other.point2.y)
+                              + other.point1.x * (other.point2.y - point1.y) + other.point2.x * (point1.y - other.point1.y);
+        long double area234 = point2.x * (other.point1.y - other.point2.y)
+                              + other.point1.x * (other.point2.y - point2.y) + other.point2.x * (point2.y - other.point1.y);
+
+        if (fabs(area123) < EPS && fabs(area124) < EPS && fabs(area134) < EPS && fabs(area234) < EPS) {
+            return max(point1.x, point2.x) >= min(other.point1.x, other.point2.x)
+                   && min(point1.x, point2.x) <= max(other.point1.x, other.point2.x)
+                   && max(point1.y, point2.y) >= min(other.point1.y, other.point2.y)
+                   && min(point1.y, point2.y) <= max(other.point1.y, other.point2.y);
+        }
+
+        return ((area123 * area124) <= EPS) && ((area134 * area234) <= EPS);
+    }
+
+    pair<int, pair<Point, Point>> intersection(const Segment & other) const {
+        if (!is_intersect(other)) {
+            return {0, {Point(), Point()}};
+        }
+
+        if ((*this) == other) {
+            if (point1 == point2) {
+                return {1, {point1, Point()}};
+            }
+            return {2, {point1, point2}};
+        }
+
+        Line line1 = (*this).to_line();
+        Line line2 = other.to_line();
+        if (!line1.is_equal(line2)) {
+            return {1, {line1.intersection(line2), Point()}};
+        }
+
+        Point first_left = point1;
+        Point first_right = point2;
+
+        Point second_left = other.point1;
+        Point second_right = other.point2;
+
+        Point left, right;
+
+        if ((first_left.x - first_right.x) > EPS || (fabs(first_left.x - first_right.x) < EPS && (first_left.y - first_right.y) > EPS)) {
+            swap(first_left, first_right);
+        }
+
+        if ((second_left.x - second_right.x) > EPS || (fabs(second_left.x - second_right.x) < EPS && (second_left.y - second_right.y) > EPS)) {
+            swap(second_left, second_right);
+        }
+
+        if ((first_left.x - second_left.x) > EPS || (fabs(first_left.x - second_left.x) < EPS && (first_left.y - second_left.y) > EPS)) {
+            left = first_left;
+        } else {
+            left = second_left;
+        }
+
+        if ((second_right.x - first_right.x) > EPS || (fabs(first_right.x - second_right.x) < EPS && (second_right.y - first_right.y) > EPS)) {
+            right = first_right;
+        } else {
+            right = second_right;
+        }
+
+        if ((left.x - right.x) > EPS || (fabs(left.x - right.x) < EPS && (left.y - right.y) > EPS)) {
+            swap(left, right);
+            cerr <<" x";
+        }
+
+        if (left == right) {
+            return {1, {left, Point()}};
+        }
+
+        return {2, {left, right}};
+    }
+
+    bool operator!= (const Segment & other) const {
+        return !((*this) == other);
+    }
+
+    bool operator== (const Segment & other) const {
+        return point1 == other.point1 && point2 == other.point2;
+    }
+
+    friend istream& operator>> (istream &in, Segment &s) {
+        in >> s.point1 >> s.point2;
+        return in;
+    }
+};
+
+pair<Point, Point> intersection(Point p1, long double r1, Point p2, long double r2) {
+    long double center_diff = p1.get_distance_between(p2);
+
+    if ((center_diff - r1 - r2 > EPS) || (fabs(r1 - r2) - center_diff > EPS)) {
+        cout << "0";
+        exit(0);
+    }
+
+    Line o(p1, p2);
+
+    Vector col = p2 - p1;
+
+    Vector norm = o.get_normal_vector();
+
+    long double delta = (r1 * r1 + center_diff * center_diff - r2 * r2) / (2 * center_diff);
+    long double norm_sz = sqrt(r1 * r1 - delta * delta);
+
+    col = col.set_length(delta);
+    norm = norm.set_length(norm_sz);
+
+    Point m = col.to_point() + p1;
+
+    Point res1 = m + norm.to_point();
+    Point res2 = m + norm.turn90().turn90().to_point();
+
+    if (res2 < res1) {
+        swap(res2, res1);
+    }
+
+    return {res1, res2};
+}
+
+const int k = 1000;
+
+int32_t main() {
+    cout << fixed << setprecision(10);
+
+    int n;
+    cin >> n;
+
+    if (n == 0) {
+        cout << 0;
+        return 0;
+    }
+
+    vector<pair<Point, long double>> a(n);
+    for (auto & i : a) {
+        cin >> i.first >> i.second;
+    }
+
+    int count = 0;
+
+    for (int i = 0; i < k; i++) {
+        long double x = (long double) i / k;
+        for (int j = 0; j < k; j++) {
+            long double y = (long double) j / k;
+
+            Point c(x, y);
+            bool correct = true;
+
+            for (auto & i : a) {
+                if (i.first.get_distance_between(c) > i.second) {
+                    correct = false;
+                }
+            }
+
+            if (correct) {
+                count++;
+            }
+        }
+    }
+
+    cout << fixed << setprecision(10) << ((long double) count / k / k);
+    return 0;
+}
+
