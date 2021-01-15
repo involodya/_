@@ -1,0 +1,258 @@
+#pragma GCC optimize("-Ofast", "-ffast-math", "unroll-loops")
+
+#include <bits/extc++.h>
+
+using namespace std;
+using namespace __gnu_pbds; // tree, trie, cc_hash_table, gp_hash_table
+
+#define void inline void
+#define endl '\n'
+#define forn(i, a, n) for (int (i) = int(a); i < int(n); ++i)
+#define forr(i, n) forn(i, 0, n)
+#define rfon(i, n, a) for (int (i) = int(n) - 1; i >= int(a); --i)
+#define rfor(i, n) rfon(i, n, 0)
+#define fov(a, x) for (auto& (a): x)
+#define f first
+#define s second
+#define rsz resize
+#define ins insert
+#define ft front()
+#define bk back()
+#define sz size()
+#define em empty
+#define rv reserve
+#define sf shrink_to_fit
+#define pf push_front
+#define pb push_back
+#define pof pop_front
+#define pob pop_back
+#define eb emplace_back
+#define lb lower_bound
+#define ub upper_bound
+#define all(a) (a).begin(), (a).end()
+#define rall(a) (a).rbegin(), (a).rend()
+#define so(x) ll(sizeof(x))
+#define fill(a, value) memset(a, value, so(a))
+#define gcd(a, b) __gcd((a), (b))
+
+#define int int_fast32_t
+#define mset multiset
+#define uset unordered_set
+#define umset unordered_multiset
+#define umap unordered_map
+#define htable gp_hash_table
+#define pqueue __gnu_pbds::priority_queue
+
+typedef string str;
+typedef int_fast8_t i8;    /// 127
+typedef uint_fast8_t u8;   /// 255
+typedef int_fast16_t i16;  /// 32 767
+typedef uint_fast16_t u16; /// 65 535
+typedef int_fast32_t i32;  /// 2 147 483 647
+typedef uint_fast32_t u32; /// 4 294 967 295
+typedef int_fast64_t ll;   /// 9 223 372 036 854 775 807
+typedef uint_fast64_t ull; /// 18 446 744 073 709 551 615
+typedef long double ld;
+
+using __gnu_cxx::rope; // a.insert(a.mutable_begin() + n, b);
+using __gnu_cxx::slist;
+
+using pi = pair<int, int>;
+using vi = vector<int>;
+using vvi = vector<vi>;
+using vpi = vector<pi>;
+
+template<typename T>
+using iset = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>; // find_by_order, order_of_key
+template<typename T>
+using rpqueue = std::priority_queue<T, vector<T>, greater<T>>;
+
+const ld PI = acos(-1.0);
+const int MOD = 998244353; // 1e6 + 69; 1e9 + 7; 1e9 + 9;
+const int SZ = 1 << 17; // 131072
+const u32 NN = 7e3; // int a[NN][NN];
+const int inf = numeric_limits<int>::max();
+const ll INF = numeric_limits<ll>::max();
+
+template<typename T>
+inline bool ismin(T &a, const T &b) { return !((b < a) && (a = b)); }
+
+template<typename T>
+inline bool ismax(T &a, const T &b) { return !((a < b) && (a = b)); }
+
+template<typename T>
+void sort(T &a) { sort(all(a)); }
+
+template<typename T>
+void rsort(T &a) { sort(rall(a)); }
+
+template<typename T>
+void reverse(T &a) { reverse(all(a)); }
+
+template<typename T>
+inline T sorted(T a) { return sort(a), a; }
+
+inline bool eq(const ld &a, const ld &b) { return fabs(a - b) < 1e-9; }
+
+template<typename T>
+inline T mmod(const T &a, const T &b) { return (a % b + b) % b; }
+
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+
+// TO_STRING
+#define ts to_string
+
+inline str ts(const char &c) { return str(1, c); }
+
+inline str ts(char &c) { return str(1, c); }
+
+inline str ts(bool &b) { return b ? "true" : "false"; }
+
+inline str ts(char *s) { return (str) s; }
+
+inline str ts(const char *&s) { return (str) s; }
+
+inline str ts(str &s) { return s; }
+
+template<typename A>
+inline str ts(complex<A> &c) {
+    stringstream ss;
+    ss << c;
+    return ss.str();
+}
+
+inline str ts(vector<bool> &v) {
+    str res = "{";
+    forr(i, v.sz) res += char('0' + v[i]);
+    res += "}";
+    return res;
+}
+
+template<size_t SZ>
+inline str ts(bitset<SZ> &b) {
+    str res;
+    forr(i, SZ) res += char('0' + b[i]);
+    return res;
+}
+
+template<typename A, typename B>
+inline str ts(pair<A, B> &p);
+
+template<typename T>
+inline str ts(rope<T> &v) {
+    bool fst = true;
+    str res = "{";
+    for(auto x : v) {
+        if (!fst) res += ", ";
+        fst = false;
+        res += ts(x);
+    }
+    res += "}";
+    return res;
+}
+
+template<typename T>
+inline str ts(T &v) {
+    bool fst = true;
+    str res = "{";
+    fov(x, v) {
+        if (!fst) res += ", ";
+        fst = false;
+        res += ts(x);
+    }
+    res += "}";
+    return res;
+}
+
+template<typename A, typename B>
+inline str ts(pair<A, B> &p) {
+    return "(" + ts(p.f) + ", " + ts(p.s) + ")";
+}
+
+void debug_out() { cerr << endl; }
+
+template<typename Head, typename... Tail>
+void debug_out(Head H, Tail... T) {
+    cerr << ' ' << ts(H);
+    debug_out(T...);
+}
+
+#ifdef _LOCAL_JUDGE
+#define dbg(...) cerr << "[" << #__VA_ARGS__ << "]:", debug_out(__VA_ARGS__)
+#else
+#define dbg(...) 42
+#endif
+
+struct InputOutputStream {
+    enum {
+        SIZE = 1 << 18 | 1
+    };
+
+    char ibuf[SIZE]{}, *s, *t, obuf[SIZE]{}, *oh;
+
+    InputOutputStream() : s(), t(), oh(obuf) {}
+
+    ~InputOutputStream() { fwrite(obuf, 1, oh - obuf, stdout); }
+
+    inline char read() {
+        return s == t && (t = (s = ibuf) + fread(ibuf, 1, SIZE, stdin)),
+                s == t ? -1 : *s++;
+    }
+
+    template<typename T>
+    inline InputOutputStream &operator>>(T &x) {
+        static char c;
+        static bool iosig;
+        for (c = read(), iosig = false; !isdigit(c); c = read()) {
+            if (c == -1) return *this;
+            iosig |= c == '-';
+        }
+        for (x = 0; isdigit(c); c = read()) x = x * 10 + (c ^ '0');
+        iosig && (x = -x);
+        return *this;
+    }
+
+    void print(char c) {
+        (oh == obuf + SIZE) && (fwrite(obuf, 1, SIZE, stdout), oh = obuf);
+        *oh++ = c;
+    }
+
+    template<typename T>
+    void print(T x) {
+        static int buf[21], cnt;
+        if (x != 0) {
+            (x < 0) && (print('-'), x = -x);
+            for (cnt = 0; x; x /= 10) buf[++cnt] = x % 10 | 48;
+            while (cnt) print((char) buf[cnt--]);
+        } else {
+            print('0');
+        }
+    }
+
+    template<typename T>
+    inline InputOutputStream &operator<<(const T &x) {
+        print(x);
+        return *this;
+    }
+} io;
+
+void mane() {
+
+
+
+}
+
+signed main() {
+    //ios::sync_with_stdio(false), cin.tie(nullptr), cout.tie(nullptr), cout << fixed << setprecision(15);
+#ifdef _LOCAL_JUDGE
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+#else
+#endif
+
+    mane();
+
+#ifdef _LOCAL_JUDGE
+    cerr << "Runtime is: " << clock() * 1000.0 / CLOCKS_PER_SEC << endl;
+#endif
+}
