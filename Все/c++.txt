@@ -1,0 +1,78 @@
+cppreference.com
+
+26098 конец еще раз
+
+
+???
+#include <tr2/bool_set>
+#include <tr2/dynamic_bitset>
+using namespace tr2; // bool_set, dynamic_bitset
+???
+
+
+
+string
+insert - вставить строку в строку
+erase - удалить кусок из строки
+replace - удалить и вставить
+substr - извлечь подстроку из строки
+find - найти подстроку в строке (первое вхождение, rfing - последнее)
+
+vector
+resize(n, val) - изменить размер на n, заполнить новосозданные элементы val
+reserve(n) - резервирет память под n элементов, но не добавляет их. Желательно использовать именно его
+capacity - возвращает вместимость вектора
+shrink_to_fit - удаляет неиспользованную но зарезервированную память
+back - последний элемент (идентично работе с индексом)
+size
+
+stack
+push
+pop
+top
+size
+empty
+
+queue
+push
+pop
+front
+back
+size
+empty
+
+deque
+push_front
+push_back
+pop_front
+pop_back
+front
+back
+size
+empty
+
+list
+Все перемещения работают через итераторы
+size
+empty
+
+
+algo
+max_element(all(v)) - возвращает итератор максимального элемента вектора (*max_element(v) для самого элемента, max_element(v) - v.begin() для индекса)
+count(all(v), val)
+next_permutation(all(v)) - следующая перестановка v 
+binary_search(all(v), key) - ret: bool
+lower_boung(all(v), key) - возвращает итератор на первый элемент, который больше или равен key
+upper_boung(all(v), key) - возвращает итератор на первый элемент, который больше key
+stable_sort(all(v)) - сортирует v не изменяя порядок равных элементов
+
+sort(all(v), [](const int &a, const int &b) -> bool {return a < b;});
+
+
+
+
+
+
+В среднем у числа n делителей sqrt(n) - используется для оценки сложности
+
+vector<bool> и bool a[] - вектор работает медленнее, но занимает в 8 раз меньше места.
